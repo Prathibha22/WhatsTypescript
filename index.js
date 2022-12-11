@@ -1,4 +1,5 @@
-"use strict";
+// Import stylesheets
+//import './style.css';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,71 +36,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-// Import stylesheets
-require("./style.css");
 var form = document.querySelector('#defineform');
 var dictionaryURL = "https://api.dictionaryapi.dev/api/v2/entries/en/";
-var wordheader = document.getElementById('wordheader');
-var definitionlead = document.getElementById('maindef');
-if (form) {
-    form.onsubmit = function () {
-        var formData = new FormData(form);
-        console.log(formData);
-        var text = formData.get('defineword');
-        console.log(text);
-        definitionlead.innerHTML = '';
-        getDefinition(text).then(function (result) {
-            wordheader.innerHTML = result[0].word + ' • ' + result[0].phonetic;
-            result.forEach(function (subresult) {
-                for (var i = 0; i < subresult.meanings.length; i++) {
-                    definitionlead.innerHTML += "<p>".concat(subresult.meanings[i].partOfSpeech, "</p>");
-                    for (var j = 0; j < subresult.meanings[i].definitions.length; j++) {
-                        definitionlead.innerHTML += "<li>".concat(subresult.meanings[i].definitions[j].definition, "</li>");
-                    }
-                    definitionlead.innerHTML += "<br>";
-                }
-            });
+var DEFINITIONS_DIV = document.getElementById('definitions');
+// if(form){
+form.onsubmit = function () {
+    var formData = new FormData(form);
+    console.log(formData);
+    var word = formData.get('defineword');
+    console.log(word);
+    alert(word);
+    DEFINITIONS_DIV.innerHTML = '';
+    
+    getDefinition(word).then(function (result) {
+        result.forEach(function (text) {
+            for (var i = 0; i < text.meanings.length; i++) {
+                DEFINITIONS_DIV.innerHTML += "<li>".concat(text.meanings[i].definitions[0].definition, "</li>");
+            }
         });
-        return false; // prevent reload
-    };
-}
+    });
+    return false;
+};
 function getDefinition(text) {
     return __awaiter(this, void 0, void 0, function () {
-        var response, result, parsed, error_1;
+        var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch(dictionaryURL + text, {
-                            method: 'GET',
-                            headers: {
-                                Accept: 'application/json'
-                            }
-                        })];
+                case 0: return [4 /*yield*/, fetch(dictionaryURL + text, {
+                        method: 'GET',
+                        headers: {
+                            Accept: 'application/json'
+                        }
+                    })];
                 case 1:
                     response = _a.sent();
-                    if (!response.ok) {
-                        throw new Error("Error! status: ".concat(response.status));
-                    }
                     return [4 /*yield*/, response.json()];
-                case 2:
-                    result = _a.sent();
-                    console.log('result is: ', JSON.stringify(result, null, 4));
-                    parsed = JSON.parse(JSON.stringify(result));
-                    return [2 /*return*/, parsed];
-                case 3:
-                    error_1 = _a.sent();
-                    if (error_1 instanceof Error) {
-                        console.log('error message: ', error_1.message);
-                        return [2 /*return*/, error_1.message];
-                    }
-                    else {
-                        console.log('unexpected error: ', error_1);
-                        return [2 /*return*/, 'An unexpected error occurred'];
-                    }
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                case 2: return [2 /*return*/, _a.sent()];
             }
         });
     });
